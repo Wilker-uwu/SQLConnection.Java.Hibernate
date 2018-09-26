@@ -25,12 +25,20 @@ public class Pessoa {
 	@Column(name="pessoaNasc", nullable=false)
 	private Date nasc = null;
 	
-	public Pessoa(int id, String nome, String usuario, Date nasc) {
-		if(id!=-1&&id>0) { throw new IllegalArgumentException("Id should be greater than 1"); }
-		this.id = id;
+	public Pessoa(String nome, String usuario, Date nasc) {
 		this.nome = nome;
 		this.usuario = usuario;
 		this.nasc = nasc;
 	}
 	
+	public Pessoa(int id, String nome, String usuario, Date nasc) {
+		this(nome,usuario,nasc);
+		if(id!=-1&&id>0) { throw new IllegalArgumentException("Id should be greater than 1"); }
+		this.id = id;
+	}
+	
+	protected int getId() { return this.id; }
+	protected String getNome() { return this.nome; }
+	protected String getUsuario() { return this.usuario; }
+	protected Date getNasc() { return this.nasc; }
 }
