@@ -15,24 +15,24 @@ import com.etec.mysql.hibernateconn.model.Pessoa;
 public class DaoJpaPessoa {
 	
 	private static DaoJpaPessoa instance = null;
-	protected EntityManager manager = null;
+	private static EntityManager manager = null;
 	
 	/**
 	 * Constructor method for {@link #DaoJpaPessoa}
 	 */
-	public DaoJpaPessoa() {
-		this.manager = getEntityManager();
+	private DaoJpaPessoa() {
+		manager = getEntityManager();
 	}
 	
 	/**
 	 * Creates an entity manager for manipulating tables.
 	 * @return the EntityManager instance
 	 */
-	private EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("crudHibernatePU");
-		return (this.manager == null)?
-				this.manager = factory.createEntityManager():
-				this.manager;
+	private static EntityManager getEntityManager() {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("dashboardConn");
+		return (manager == null)?
+				manager = factory.createEntityManager():
+				manager;
 	}
 	
 	/**
@@ -46,28 +46,75 @@ public class DaoJpaPessoa {
 	/**
 	 * Looks for a registry instance according to the offered ID.
 	 * @param id
-	 * @return the encountered instance of {@link Pessoa}, if any.
+	 * @return the encountered instance of {@code Pessoa}, if any.
 	 */
-	public Pessoa findById(final int id) {
-		return this.manager.find(Pessoa.class, id);
+	public static Pessoa findById(final int id) {
+		return getEntityManager().find(Pessoa.class, id);
 	}
 	
 	/**
-	 * Gathers all rows of the table from {@link Pessoa}
+	 * Gathers all rows of the table from {@code Pessoa}
 	 * @return the list of all the instances of {@code Pessoa}
 	 */
 	@SuppressWarnings("unchecked") //return the converted list of instances of Pessoa without checking
-	public List<Pessoa> findAll() {
-		return this.manager.createQuery("FROM tb"+Pessoa.class.getSimpleName()).getResultList();
+	public static List<Pessoa> findAll() {
+		return getEntityManager().createQuery("FROM tb"+Pessoa.class.getSimpleName())
+			.getResultList();
 	}
 	
 	/**
-	 * Insert method for {@link Pessoa}
+	 * Insert method for {@code Pessoa}
 	 * @param ppl
 	 */
-	public void persist(Pessoa ppl) {
-		this.manager.getTransaction().begin();
-		this.manager.persist(ppl);
-		this.manager.getTransaction().commit();
+	public static void persist(Pessoa ppl) {
+		try {
+			getEntityManager().getTransaction().begin();
+			getEntityManager().persist(ppl);
+			getEntityManager().getTransaction().commit();
+		} catch(Exception exp) {
+			getEntityManager().getTransaction().rollback();
+			exp.printStackTrace();
+		}
 	}
+	
+	/**
+	 * Update method for {@code Pessoa}
+	 * @param ppl
+	 */
+	public static void merge(Pessoa ppl) {
+		try {
+			getEntityManager().getTransaction().begin();
+			getEntityManager().merge(ppl);
+			getEntityManager().getTransaction().commit();
+		} catch(Exception exp) {
+			getEntityManager().getTransaction().rollback();
+			exp.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Delete method for {@code Pessoa}
+	 * @param ppl
+	 */
+	public static void remove(Pessoa ppl) {
+		try {
+			getEntityManager().getTransaction().begin();
+			getEntityManager().remove(findById(ppl.getId()));
+			getEntityManager().getTransaction().commit();
+		} catch(Exception exp) {
+			getEntityManager().getTransaction().rollback();
+			exp.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Delete method for {@code Pessoa}, exept that only ID is used.
+	 * @param id is the id of the registry to be deleted.
+	 * @see {@link #remove(Pessoa)}
+	 */
+	public static void removeById(final int id) {
+		Pessoa ppl = findById(id);
+		remove(ppl);
+	}
+
 }

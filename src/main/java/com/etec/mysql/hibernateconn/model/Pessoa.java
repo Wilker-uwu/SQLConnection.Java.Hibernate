@@ -20,25 +20,20 @@ public class Pessoa {
 	private String nome = null;
 	
 	@Column(name="pessoaUsuario", unique=true, nullable=false)
-	private String usuario = null; 
+	private String usuario = null;
 	
-	@Column(name="pessoaNasc", nullable=false)
-	private Date nasc = null;
-	
-	public Pessoa(String nome, String usuario, Date nasc) {
+	public Pessoa(String nome, String usuario) {
 		this.nome = nome;
 		this.usuario = usuario;
-		this.nasc = nasc;
 	}
 	
-	public Pessoa(int id, String nome, String usuario, Date nasc) {
-		this(nome,usuario,nasc);
+	public Pessoa(int id, String nome, String usuario) {
+		this(nome,usuario);
 		if(id!=-1&&id>0) { throw new IllegalArgumentException("Id should be greater than 1"); }
 		this.id = id;
 	}
 	
-	protected int getId() { return this.id; }
-	protected String getNome() { return this.nome; }
-	protected String getUsuario() { return this.usuario; }
-	protected Date getNasc() { return this.nasc; }
+	public int getId() { return this.id; }
+	public String getNome() { return this.nome; }
+	public String getUsuario() { return this.usuario; }
 }
