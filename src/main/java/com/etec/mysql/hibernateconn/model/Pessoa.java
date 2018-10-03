@@ -1,12 +1,7 @@
 package com.etec.mysql.hibernateconn.model;
 
-import java.util.Date;
-
 import javax.persistence.*;
 
-/**
- * 'Person' class example
- */
 @Entity
 @Table(name="tbPessoa")
 public class Pessoa {
@@ -22,14 +17,16 @@ public class Pessoa {
 	@Column(name="pessoaUsuario", unique=true, nullable=false)
 	private String usuario = null;
 	
+	public Pessoa() {}
+	
 	public Pessoa(String nome, String usuario) {
 		this.nome = nome;
 		this.usuario = usuario;
 	}
 	
-	public Pessoa(int id, String nome, String usuario) {
+	public Pessoa(final int id, final String nome, final String usuario) throws IllegalArgumentException{
 		this(nome,usuario);
-		if(id!=-1&&id>0) { throw new IllegalArgumentException("Id should be greater than 1"); }
+		if(id!=-1&&id<1) { throw new IllegalArgumentException("Id should be greater than 1"); }
 		this.id = id;
 	}
 	
